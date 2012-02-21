@@ -1,53 +1,59 @@
 # encoding: utf-8
 
-require 'rubygems'
-require 'bundler'
-begin
-  Bundler.setup(:default, :development)
-rescue Bundler::BundlerError => e
-  $stderr.puts e.message
-  $stderr.puts "Run `bundle install` to install missing gems"
-  exit e.status_code
-end
-require 'rake'
+task :default => :test
 
-require 'jeweler'
-Jeweler::Tasks.new do |gem|
-  # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
-  gem.name = "droidsuggest"
-  gem.homepage = "http://github.com/strazzere/droidsuggest"
-  gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
-  gem.email = "Tim.Strazzere@mylookout.com"
-  gem.authors = ["Tim Strazzere"]
-  # dependencies defined in Gemfile
-end
-Jeweler::RubygemsDotOrgTasks.new
+desc "Run only unit tests by default"
+task :test => 'test:unit'
+
+require 'bundler'
+Bundler::GemHelper.install_tasks
 
 require 'rake/testtask'
-Rake::TestTask.new(:test) do |test|
-  test.libs << 'lib' << 'test'
-  test.pattern = 'test/**/test_*.rb'
-  test.verbose = true
+include Rake::DSL
+
+namespace :test do
+  Rake::TestTask.new(:unit) do |test|
+    test.libs << %w{ lib test }
+    test.pattern = 'test/unit/*_test.rb'
+    test.verbose = true
+  end
+  
+  Rake::TestTask.new(:integration) do |test|
+    test.libs << %w{ lib test }
+    test.pattern = 'test/integration/*_test.rb'
+    test.verbose = true
+  end
+  
+  desc "Run all tests, including integration tests"
+  task :all => [ :unit, :integration ]
+end
+
+require 'yard'
+require 'yard/rake/yardoc_task'
+
+desc "Generate documentation"
+task :doc => 'doc:generate'
+
+namespace :doc do
+  GEM_ROOT = File.dirname(__FILE__)
+  RDOC_ROOT = File.join(GEM_ROOT, 'doc')
+
+  YARD::Rake::YardocTask.new(:generate) do |rdoc|
+    rdoc.files = Dir.glob(File.join(GEM_ROOT, 'lib', '**', '*.rb')) +
+      [ File.join(GEM_ROOT, 'README.markdown') ]
+    rdoc.options = ['--output-dir', RDOC_ROOT, '--readme', 'README.markdown']
+  end
+
+  desc "Remove generated documentation"
+  task :clobber do
+    FileUtils.rm_rf(RDOC_ROOT) if File.exists?(RDOC_ROOT)
+  end
 end
 
 require 'rcov/rcovtask'
-Rcov::RcovTask.new do |test|
-  test.libs << 'test'
-  test.pattern = 'test/**/test_*.rb'
-  test.verbose = true
-  test.rcov_opts << '--exclude "gems/*"'
-end
-
-task :default => :test
-
-require 'rdoc/task'
-Rake::RDocTask.new do |rdoc|
-  version = File.exist?('VERSION') ? File.read('VERSION') : ""
-
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "droidsuggest #{version}"
-  rdoc.rdoc_files.include('README*')
-  rdoc.rdoc_files.include('lib/**/*.rb')
+Rcov::RcovTask.new do |t|
+  t.libs << "test"
+  t.pattern = 'test/unit/*_test.rb'
+  # exclude loaded libraries from code analysis
+  t.rcov_opts << '--exclude /gems/'
 end

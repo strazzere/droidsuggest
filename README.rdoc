@@ -1,3 +1,13 @@
 = droidsuggest
 
 Wrapper for the Android Market Search suggestions.
+
+== Sample output
+
+`ruby examples/simple_suggest.rb 
+Attempting to look for suggestions for 'look'...
+Found 4 suggestions!
+Suggestion 1 : lookout
+Suggestion 2 : lookout mobile security
+Suggestion 3 : lookout security & antivirus
+Suggestion 4 : look out`

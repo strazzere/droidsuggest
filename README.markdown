@@ -3,7 +3,7 @@
 Wrapper for the Android Market Search suggestions.
 
 == Sample output
-
+~~~
   ruby examples/simple_suggest.rb 
   Found 6 suggestions!
   Suggestion 0 : Lookout Security & Antivirus suggestion type was APPLICATION
@@ -14,3 +14,4 @@ Wrapper for the Android Market Search suggestions.
   Suggestion 3 : look out suggestion type was QUERY
   Suggestion 4 : look alike suggestion type was QUERY
   Suggestion 5 : lookout security & antivirus suggestion type was QUERY
+~~~

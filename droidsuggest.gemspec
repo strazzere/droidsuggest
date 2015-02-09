@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.license = "MIT"
   s.summary = "Wrapper for the Android Market Search suggestions"
   s.description = "This gem will allow you to query the Android Market for an array of search suggestions, based on your query."
-  s.email = "Tim.Strazzere@mylookout.com"
+  s.email = "Tim.Strazzere@lookout.com"
   s.authors = ["Tim Strazzere"]
 
   s.files         = `git ls-files`.split("\n")
